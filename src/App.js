@@ -8,9 +8,16 @@ export default function App() {
   const [currencyFrom, setCurrencyFrom] = useState('Bitcoin')
   const [amount, setAmout] = useState(1)
   const [currencyTo, setCurrencyTo] = useState('USD')
+  const dataCurrencyTo = [
+    { id: 1, text: 'USD', icon: '🇺🇸 ',value: 44000 },
+    { id: 2, text: 'EUR', icon: '🗺',value: 45000 },
+  ]
   const [type, setType] = useState('')
-  const [value, setValue] = useState(48300)
-  const [loader, setLoader] = useState(false)
+  const [value, setValue] = useState(dataCurrencyTo[0].value)
+  const [loader, setLoader] = useState({
+    get: false,
+    send: false
+  })
   const itemsPerPage = 4
   const [dates, setDates] = useState({
     dateIni: utils.getDateBefore(10),
@@ -77,28 +84,104 @@ export default function App() {
         return element
       }
     })
-    console.log('filter ->', filter)
     setDataGrid(filter)
+
+  }
+  const getData = async () => {
+
+    setLoader({ ...loader, get: true })
+
+    try {
+
+      const response = await fetch('http://127.0.0.1:4000/history', {
+        method: 'GET',
+        timeout: 15000,
+        headers: { 'Content-Type': 'application/json' },
+      })
+
+      const data = await response.json()
+
+      console.log('res ->', data)
+
+    } catch (error) {
+
+      console.log('#### error #####', error)
+    }
+
+    setLoader({ ...loader, get: false })
 
   }
   const sendData = async () => {
 
-    setLoader(true)
+    setLoader({ ...loader, send: true })
+    let total = (amount * value)
+    console.log('sendData ->', currencyFrom, amount, currencyTo, total)
+    try {
 
-    setTimeout(() => {
+      const response = await fetch('http://127.0.0.1:4000/history', {
+        method: 'POST',
+        timeout: 15000,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currencyFrom: currencyFrom,
+          amount: amount,
+          currencyTo: currencyTo,
+          total: total
+        })
+      })
 
-      setLoader(false)
+      const data = await response.json()
 
-    }, 5000)
+      console.log('res ->', data)
 
+    } catch (error) {
+
+      console.log('#### error #####', error)
+    }
+
+    setLoader({ ...loader, send: false })
+
+  }
+ 
+
+  const getValue = (dataSelect) =>{
+
+    dataSelect = Number(dataSelect)
+
+    const filter = dataCurrencyTo.filter(element =>{
+      return element.id === dataSelect
+    })
+
+    setCurrencyTo(filter[0].text)
+    setValue(filter[0].value)
+    sumValues(amount)
+
+  }
+
+  const sumValues = (amountInput) => {
+
+    amountInput = parseInt(amountInput)
+
+    setAmout(amountInput)
+
+    let total = amountInput * value
+
+    document.getElementById("value").value = `$ ${utils.formatMoney(total)}`
 
   }
 
   useEffect(() => {
 
-    console.log('currencyFrom ->', currencyFrom)
+    sumValues(amount)
 
-  }, [currencyFrom])
+  }, [value])
+
+  useEffect(() => {
+
+    getData()
+    sumValues(amount)
+
+  }, [])
 
 
   /*********/
@@ -136,9 +219,13 @@ export default function App() {
 
           <div className="border w-52 p-5">
             <label className="form-label inline-block mb-2 text-gray-300">Currency From</label>
-            <select value={currencyFrom} onChange={(e) => setCurrencyFrom(e.target.value)} className="block appearance-none w-full border-gray-200 text-gray-700 p-.1 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state">
-              <option>Bitcoin</option>
-              <option>Ripple</option>
+            <select
+              value={currencyFrom}
+              onChange={(e) => setCurrencyFrom(e.target.value)}
+              className="block appearance-none w-full border-gray-200 text-gray-700 p-.1 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state">
+              <option value=" "> 👊🏻 Select</option>
+              <option value="Bitcoin">₿ Bitcoin</option>
+              <option value="Ripple">Ripple</option>
             </select>
           </div>
 
@@ -146,7 +233,7 @@ export default function App() {
             <label className="form-label inline-block mb-2 text-gray-300">Amount</label>
             <input
               value={amount}
-              onChange={(e) => setAmout(e.target.value)}
+              onChange={(e) => sumValues(e.target.value > 0 ? e.target.value : 1)}
               type="number"
               className="
                 form-control
@@ -163,7 +250,7 @@ export default function App() {
                 transition
                 ease-in-out
                 m-0
-                focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none
+                focus:text-gray-700 focus:bg-white focus:border-gray-300 focus:outline-none
               "
             />
           </div>
@@ -172,17 +259,21 @@ export default function App() {
           </div>
           <div className="border w-52 p-5">
             <label className="form-label inline-block mb-2 text-gray-300">Currency to</label>
-            <select value={currencyTo} onChange={(e) => setCurrencyTo(e.target.value)} className="block appearance-none w-full border-gray-200 text-gray-700 p-.1 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state">
-              <option>USD</option>
-              <option>EUR</option>
-              <option>GBP</option>
+            <select
+              onChange={(e) => getValue(e.target.value)}
+              className="block appearance-none w-full border-gray-200 text-gray-700 p-.1 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state">
+              {
+                dataCurrencyTo.map((row, idx) =>
+                  <option key={idx} value={row.id}>{row.icon} {row.text}</option>
+                )
+              }
             </select>
           </div>
           <div className="border w-52 p-5">
             <label className="form-label inline-block mb-2 text-gray-300">Amount</label>
             <input
-              onChange={(e) => setValue(e.target.value)}
-              value={value}
+              id="value"
+              disabled={true}
               type="text"
               className="
                 form-control
@@ -206,9 +297,9 @@ export default function App() {
           <div className="border w-52 p-5">
             <button
               onClick={() => sendData()}
-              disabled={loader}
+              disabled={loader.send}
               type="button" className="mt-7 w-24 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
-              {loader ? 'Saving...' : 'Save'}
+              {loader.send ? 'Saving...' : 'Save'}
             </button>
           </div>
         </div>
@@ -269,29 +360,25 @@ export default function App() {
               {currentItems &&
                 currentItems.map((row, idx) => (
                   <tr key={idx}>
-                    <td className="p-3 border border-slate-300 ...">{utils.formatDate(row.dateTime)}</td>
-                    <td className="p-3 border border-slate-300 ...">{row.currencyFrom}</td>
-                    <td className="p-3 border border-slate-300 ...">{row.amount}</td>
-                    <td className="p-3 border border-slate-300 ...">{row.currencyTo}</td>
-                    <td className="p-3 border border-slate-300 ...">{utils.formatMoney(row.value)}</td>
+                    <td className="p-3 border border-slate-300 ">{utils.formatDate(row.dateTime)}</td>
+                    <td className="p-3 border border-slate-300 ">{row.currencyFrom}</td>
+                    <td className="p-3 border border-slate-300 ">{row.amount}</td>
+                    <td className="p-3 border border-slate-300 ">{row.currencyTo}</td>
+                    <td className="p-3 border border-slate-300 ">{utils.formatMoney(row.value)}</td>
                     <td className={row.type === 'Exchanged' ? "p-3 border border-slate-300 text-blue-600" : "p-3 border border-slate-300 text-green-500"}>{row.type}</td>
                   </tr>
                 ))}
-              <tr >
-                <td>
-                  <ReactPaginate
-                    breakLabel="..."
-                    nextLabel="Next ->"
-                    onPageChange={handlePageClick}
-                    pageRangeDisplayed={2}
-                    pageCount={pageCount}
-                    previousLabel="<- Previous"
-                    renderOnZeroPageCount={null}
-                  />
-                </td>
-              </tr>
             </tbody>
           </table>
+          <ReactPaginate
+            breakLabel="..."
+            nextLabel="Next ->"
+            onPageChange={handlePageClick}
+            pageRangeDisplayed={2}
+            pageCount={pageCount}
+            previousLabel="<- Previous"
+            renderOnZeroPageCount={null}
+          />
         </div>
       </footer>
     </div>
