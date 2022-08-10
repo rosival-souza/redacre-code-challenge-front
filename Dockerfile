@@ -3,7 +3,7 @@
 # 2) nginx stage to serve frontend assets
 
 # Name the node stage "builder"
-FROM node:14.18 as builder
+FROM node:16 as builder
 
 ARG AMBIENTE
 ENV AMBIENTE=${AMBIENTE}
@@ -13,10 +13,6 @@ WORKDIR /app
 
 # Copy all files from current directory to working dir in image
 COPY . .
-
-RUN if [ "$AMBIENTE" = "Development" ]; \
-then cp /app/.env.development.local /app/.env; \
-fi;
 
 # install node modules and build assets
 RUN npm install --loglevel verbose 

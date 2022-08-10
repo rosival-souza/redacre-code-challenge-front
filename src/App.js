@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import utils from './utils'
 import ReactPaginate from 'react-paginate'
 
-
 export default function App() {
 
   const [currencyFrom, setCurrencyFrom] = useState('Bitcoin')
@@ -19,70 +18,46 @@ export default function App() {
     send: false
   })
   const itemsPerPage = 4
+  const API = 'http://localhost:4000'
   const [dates, setDates] = useState({
     dateIni: utils.getDateBefore(10),
     dateEnd: utils.getDate()
   })
 
-  const dataSelect = [
-    {
-      value: 1,
-      text: 'Bitcoin',
-      icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-currency-bitcoin text-orange-600" viewBox="0 0 16 16">
-        <path d="M5.5 13v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.5v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.084c1.992 0 3.416-1.033 3.416-2.82 0-1.502-1.007-2.323-2.186-2.44v-.088c.97-.242 1.683-.974 1.683-2.19C11.997 3.93 10.847 3 9.092 3H9V1.75a.25.25 0 0 0-.25-.25h-1a.25.25 0 0 0-.25.25V3h-.573V1.75a.25.25 0 0 0-.25-.25H5.75a.25.25 0 0 0-.25.25V3l-1.998.011a.25.25 0 0 0-.25.25v.989c0 .137.11.25.248.25l.755-.005a.75.75 0 0 1 .745.75v5.505a.75.75 0 0 1-.75.75l-.748.011a.25.25 0 0 0-.25.25v1c0 .138.112.25.25.25L5.5 13zm1.427-8.513h1.719c.906 0 1.438.498 1.438 1.312 0 .871-.575 1.362-1.877 1.362h-1.28V4.487zm0 4.051h1.84c1.137 0 1.756.58 1.756 1.524 0 .953-.626 1.45-2.158 1.45H6.927V8.539z" />
-      </svg>
-    },
-    {
-      value: 2,
-      text: 'Ethereum',
-      icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-currency-bitcoin text-orange-600" viewBox="0 0 16 16">
-        <path d="M5.5 13v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.5v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.084c1.992 0 3.416-1.033 3.416-2.82 0-1.502-1.007-2.323-2.186-2.44v-.088c.97-.242 1.683-.974 1.683-2.19C11.997 3.93 10.847 3 9.092 3H9V1.75a.25.25 0 0 0-.25-.25h-1a.25.25 0 0 0-.25.25V3h-.573V1.75a.25.25 0 0 0-.25-.25H5.75a.25.25 0 0 0-.25.25V3l-1.998.011a.25.25 0 0 0-.25.25v.989c0 .137.11.25.248.25l.755-.005a.75.75 0 0 1 .745.75v5.505a.75.75 0 0 1-.75.75l-.748.011a.25.25 0 0 0-.25.25v1c0 .138.112.25.25.25L5.5 13zm1.427-8.513h1.719c.906 0 1.438.498 1.438 1.312 0 .871-.575 1.362-1.877 1.362h-1.28V4.487zm0 4.051h1.84c1.137 0 1.756.58 1.756 1.524 0 .953-.626 1.45-2.158 1.45H6.927V8.539z" />
-      </svg>,
-    },
-    {
-      value: 3,
-      text: 'Ripple',
-      icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-currency-bitcoin text-orange-600" viewBox="0 0 16 16">
-        <path d="M5.5 13v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.5v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.084c1.992 0 3.416-1.033 3.416-2.82 0-1.502-1.007-2.323-2.186-2.44v-.088c.97-.242 1.683-.974 1.683-2.19C11.997 3.93 10.847 3 9.092 3H9V1.75a.25.25 0 0 0-.25-.25h-1a.25.25 0 0 0-.25.25V3h-.573V1.75a.25.25 0 0 0-.25-.25H5.75a.25.25 0 0 0-.25.25V3l-1.998.011a.25.25 0 0 0-.25.25v.989c0 .137.11.25.248.25l.755-.005a.75.75 0 0 1 .745.75v5.505a.75.75 0 0 1-.75.75l-.748.011a.25.25 0 0 0-.25.25v1c0 .138.112.25.25.25L5.5 13zm1.427-8.513h1.719c.906 0 1.438.498 1.438 1.312 0 .871-.575 1.362-1.877 1.362h-1.28V4.487zm0 4.051h1.84c1.137 0 1.756.58 1.756 1.524 0 .953-.626 1.45-2.158 1.45H6.927V8.539z" />
-      </svg>,
-    },
-    {
-      value: 4,
-      text: 'Litcoin',
-      icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-currency-bitcoin text-orange-600" viewBox="0 0 16 16">
-        <path d="M5.5 13v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.5v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.084c1.992 0 3.416-1.033 3.416-2.82 0-1.502-1.007-2.323-2.186-2.44v-.088c.97-.242 1.683-.974 1.683-2.19C11.997 3.93 10.847 3 9.092 3H9V1.75a.25.25 0 0 0-.25-.25h-1a.25.25 0 0 0-.25.25V3h-.573V1.75a.25.25 0 0 0-.25-.25H5.75a.25.25 0 0 0-.25.25V3l-1.998.011a.25.25 0 0 0-.25.25v.989c0 .137.11.25.248.25l.755-.005a.75.75 0 0 1 .745.75v5.505a.75.75 0 0 1-.75.75l-.748.011a.25.25 0 0 0-.25.25v1c0 .138.112.25.25.25L5.5 13zm1.427-8.513h1.719c.906 0 1.438.498 1.438 1.312 0 .871-.575 1.362-1.877 1.362h-1.28V4.487zm0 4.051h1.84c1.137 0 1.756.58 1.756 1.524 0 .953-.626 1.45-2.158 1.45H6.927V8.539z" />
-      </svg>
-    }
+  /** This is data temp to demonstrate Grid **/ 
+  const dataTemp = [
+    { date: '2022-08-08', currency_from: 'Bitcoin', amount: 1, currency_to: 'USD', total: 48000, type: 'Live Price' },
+    { date: '2022-08-05', currency_from: 'Ripple', amount: 1, currency_to: 'EUR', total: 56000, type: 'Exchanged' },
+    { date: '2022-08-04', currency_from: 'Bitcoin', amount: 1, currency_to: 'USD', total: 38000, type: 'Live Price' },
+    { date: '2022-08-01', currency_from: 'Bitcoin', amount: 1, currency_to: 'EUR', total: 58000, type: 'Exchanged' },
+    { date: '2022-08-04', currency_from: 'Bitcoin', amount: 1, currency_to: 'USD', total: 18000, type: 'Live Price' },
+    { date: '2022-08-02', currency_from: 'Ripple', amount: 1, currency_to: 'USD', total: 48000, type: 'Live Price' },
+    { date: '2022-08-04', currency_from: 'Bitcoin', amount: 1, currency_to: 'EUR', total: 48000, type: 'Exchanged' },
+    { date: '2022-08-10', currency_from: 'Ripple', amount: 1, currency_to: 'USD', total: 48000, type: 'Live Price' },
+    { date: '2022-08-03', currency_from: 'Bitcoin', amount: 1, currency_to: 'EUR', total: 48000, type: 'Live Price' },
+    { date: '2022-08-11', currency_from: 'Ripple', amount: 1, currency_to: 'USD', total: 48000, type: 'Exchanged' },
+    { date: '2022-08-12', currency_from: 'Bitcoin', amount: 1, currency_to: 'EUR', total: 48000, type: 'Live Price' },
+    { date: '2022-08-01', currency_from: 'Ripple', amount: 1, currency_to: 'USD', total: 48000, type: 'Exchanged' },
+    { date: '2022-08-02', currency_from: 'Ripple', amount: 1, currency_to: 'EUR', total: 48000, type: 'Live Price' },
+    { date: '2022-08-01', currency_from: 'Bitcoin', amount: 1, currency_to: 'USD', total: 48000, type: 'Exchanged' },
   ]
-  const [data] = useState([
-    { dateTime: '2022-08-08', currencyFrom: 'Bitcoin', amount: 1, currencyTo: 'USD', value: 48000, type: 'Live Price' },
-    { dateTime: '2022-08-05', currencyFrom: 'Ripple', amount: 1, currencyTo: 'EUR', value: 56000, type: 'Exchanged' },
-    { dateTime: '2022-08-04', currencyFrom: 'Bitcoin', amount: 1, currencyTo: 'USD', value: 38000, type: 'Live Price' },
-    { dateTime: '2022-08-01', currencyFrom: 'Bitcoin', amount: 1, currencyTo: 'EUR', value: 58000, type: 'Exchanged' },
-    { dateTime: '2022-08-04', currencyFrom: 'Bitcoin', amount: 1, currencyTo: 'USD', value: 18000, type: 'Live Price' },
-    { dateTime: '2022-08-02', currencyFrom: 'Ripple', amount: 1, currencyTo: 'USD', value: 48000, type: 'Live Price' },
-    { dateTime: '2022-08-04', currencyFrom: 'Bitcoin', amount: 1, currencyTo: 'EUR', value: 48000, type: 'Exchanged' },
-    { dateTime: '2022-08-10', currencyFrom: 'Ripple', amount: 1, currencyTo: 'USD', value: 48000, type: 'Live Price' },
-    { dateTime: '2022-08-03', currencyFrom: 'Bitcoin', amount: 1, currencyTo: 'EUR', value: 48000, type: 'Live Price' },
-    { dateTime: '2022-08-11', currencyFrom: 'Ripple', amount: 1, currencyTo: 'USD', value: 48000, type: 'Exchanged' },
-    { dateTime: '2022-08-12', currencyFrom: 'Bitcoin', amount: 1, currencyTo: 'EUR', value: 48000, type: 'Live Price' },
-    { dateTime: '2022-08-01', currencyFrom: 'Ripple', amount: 1, currencyTo: 'USD', value: 48000, type: 'Exchanged' },
-    { dateTime: '2022-08-02', currencyFrom: 'Ripple', amount: 1, currencyTo: 'EUR', value: 48000, type: 'Live Price' },
-    { dateTime: '2022-08-01', currencyFrom: 'Bitcoin', amount: 1, currencyTo: 'USD', value: 48000, type: 'Exchanged' },
-  ])
-  const [dataGrid, setDataGrid] = useState(data)
+  /** This is data temp to demonstrate Grid **/ 
+
+  const [dataGrid, setDataGrid] = useState(dataTemp)
+
   const getFilter = () => {
 
     let dateIni = new Date(dates.dateIni).getTime()
     let dateEnd = new Date(dates.dateEnd).getTime()
 
-    const filter = data.filter((element) => {
+    const filter = dataTemp.filter((element) => {
       if (
         new Date(element.dateTime).getTime() >= dateIni && new Date(element.dateTime).getTime() <= dateEnd
         && element.type.includes(type)
       ) {
         return element
       }
+      return element
     })
     setDataGrid(filter)
 
@@ -93,15 +68,17 @@ export default function App() {
 
     try {
 
-      const response = await fetch('http://127.0.0.1:4000/history', {
+      const response = await fetch(`${API}/history`, {
         method: 'GET',
         timeout: 15000,
         headers: { 'Content-Type': 'application/json' },
       })
 
-      const data = await response.json()
+      const res = await response.json()
 
-      console.log('res ->', data)
+      console.log('res ->', res)
+
+      setDataGrid(res.data)
 
     } catch (error) {
 
@@ -114,11 +91,12 @@ export default function App() {
   const sendData = async () => {
 
     setLoader({ ...loader, send: true })
+
     let total = (amount * value)
-    console.log('sendData ->', currencyFrom, amount, currencyTo, total)
+
     try {
 
-      const response = await fetch('http://127.0.0.1:4000/history', {
+      const response = await fetch(`${API}/history`, {
         method: 'POST',
         timeout: 15000,
         headers: { 'Content-Type': 'application/json' },
@@ -133,6 +111,7 @@ export default function App() {
       const data = await response.json()
 
       console.log('res ->', data)
+      getData()
 
     } catch (error) {
 
@@ -142,8 +121,6 @@ export default function App() {
     setLoader({ ...loader, send: false })
 
   }
- 
-
   const getValue = (dataSelect) =>{
 
     dataSelect = Number(dataSelect)
@@ -157,7 +134,6 @@ export default function App() {
     sumValues(amount)
 
   }
-
   const sumValues = (amountInput) => {
 
     amountInput = parseInt(amountInput)
@@ -211,13 +187,13 @@ export default function App() {
 
   return (
     <div className="App">
-      <header className="container mx-auto  shadow-lg border-none p-8 m-10">
+      <header className="container mx-auto shadow-lg border-none p-8 m-10">
         <p className="text-3xl text-gray-700 font-bold mb-5">
           Exchange
         </p>
         <div className="flex flex-wrap">
 
-          <div className="border w-52 p-5">
+          <div className="w-52 p-5">
             <label className="form-label inline-block mb-2 text-gray-300">Currency From</label>
             <select
               value={currencyFrom}
@@ -229,7 +205,7 @@ export default function App() {
             </select>
           </div>
 
-          <div className="border w-52 p-5">
+          <div className="w-52 p-5">
             <label className="form-label inline-block mb-2 text-gray-300">Amount</label>
             <input
               value={amount}
@@ -254,10 +230,10 @@ export default function App() {
               "
             />
           </div>
-          <div className="flex space-x-2 justify-center items-center border w-1/1 p-5">
+          <div className="flex space-x-2 justify-center items-center w-1/1 p-5">
             <br />=
           </div>
-          <div className="border w-52 p-5">
+          <div className="w-52 p-5">
             <label className="form-label inline-block mb-2 text-gray-300">Currency to</label>
             <select
               onChange={(e) => getValue(e.target.value)}
@@ -269,7 +245,7 @@ export default function App() {
               }
             </select>
           </div>
-          <div className="border w-52 p-5">
+          <div className="w-52 p-5">
             <label className="form-label inline-block mb-2 text-gray-300">Amount</label>
             <input
               id="value"
@@ -294,7 +270,7 @@ export default function App() {
               "
             />
           </div>
-          <div className="border w-52 p-5">
+          <div className="w-52 p-5">
             <button
               onClick={() => sendData()}
               disabled={loader.send}
@@ -304,13 +280,12 @@ export default function App() {
           </div>
         </div>
       </header>
-
       <footer className="container mx-auto shadow-lg border-none p-8 m-10">
         <p className="text-3xl text-gray-700 font-bold mb-5">
           History
         </p>
         <div className="flex flex-wrap">
-          <div className="border w-52 p-5">
+          <div className="w-52 p-5">
             <label className="form-label inline-block mb-2 text-gray-300">From date</label>
             <input
               onChange={(e) => setDates({ ...dates, dateIni: e.target.value })}
@@ -319,7 +294,7 @@ export default function App() {
               className="form-control block w-full px-3 py-2.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
               placeholder="Select a date" />
           </div>
-          <div className="border w-52 p-5">
+          <div className="w-52 p-5">
             <label className="form-label inline-block mb-2 text-gray-300">To date</label>
             <input
               onChange={(e) => setDates({ ...dates, dateEnd: e.target.value })}
@@ -328,7 +303,7 @@ export default function App() {
               placeholder="Select a date" />
 
           </div>
-          <div className="border w-52 p-5">
+          <div className="w-52 p-5">
             <label className="form-label inline-block mb-2 text-gray-300">Type</label>
             <select value={type} onChange={(e) => setType(e.target.value)} className="block appearance-none w-full border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state">
               <option value="">All</option>
@@ -336,7 +311,7 @@ export default function App() {
               <option>Exchanged</option>
             </select>
           </div>
-          <div className="border w-52 p-5">
+          <div className="w-52 p-5">
             <button
               onClick={() => getFilter()}
               type="button" className="mt-8 w-24 text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-800">
@@ -345,27 +320,27 @@ export default function App() {
           </div>
         </div>
         <div className="flex flex-wrap">
-          <table className="border-collapse border w-full">
+          <table className="border-collapse w-full">
             <thead className="text-left">
               <tr>
-                <th className="p-1 font-normal bg-gray-100 border border-slate-300 ">Date & Time</th>
-                <th className="p-1 font-normal bg-gray-100 border border-slate-300 ">Currency From</th>
-                <th className="p-1 font-normal bg-gray-100 border border-slate-300 ">Amount 1</th>
-                <th className="p-1 font-normal bg-gray-100 border border-slate-300 ">Currency To</th>
-                <th className="p-1 font-normal bg-gray-100 border border-slate-300 ">Amount 2</th>
-                <th className="p-1 font-normal bg-gray-100 border border-slate-300 ">Type</th>
+                <th className="p-1 font-normal bg-gray-100">Date & Time</th>
+                <th className="p-1 font-normal bg-gray-100">Currency From</th>
+                <th className="p-1 font-normal bg-gray-100">Amount 1</th>
+                <th className="p-1 font-normal bg-gray-100">Currency To</th>
+                <th className="p-1 font-normal bg-gray-100">Amount 2</th>
+                <th className="p-1 font-normal bg-gray-100">Type</th>
               </tr>
             </thead>
             <tbody className="text-left striped">
               {currentItems &&
                 currentItems.map((row, idx) => (
                   <tr key={idx}>
-                    <td className="p-3 border border-slate-300 ">{utils.formatDate(row.dateTime)}</td>
-                    <td className="p-3 border border-slate-300 ">{row.currencyFrom}</td>
-                    <td className="p-3 border border-slate-300 ">{row.amount}</td>
-                    <td className="p-3 border border-slate-300 ">{row.currencyTo}</td>
-                    <td className="p-3 border border-slate-300 ">{utils.formatMoney(row.value)}</td>
-                    <td className={row.type === 'Exchanged' ? "p-3 border border-slate-300 text-blue-600" : "p-3 border border-slate-300 text-green-500"}>{row.type}</td>
+                    <td className="p-3">{utils.formatDate(row.date)}</td>
+                    <td className="p-3">{row.currency_from}</td>
+                    <td className="p-3">{row.amount}</td>
+                    <td className="p-3">{row.currency_to}</td>
+                    <td className="p-3">{utils.formatMoney(row.total)}</td>
+                    <td className={row.currency_to === 'USD' ? "p-3 text-blue-600" : "p-3 text-green-500"}>{row.currency_to === 'USD' ? 'Exchanged':'Live Price'}</td>
                   </tr>
                 ))}
             </tbody>
