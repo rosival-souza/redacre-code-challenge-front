@@ -8,7 +8,7 @@ export default function App() {
   const [amount, setAmout] = useState(1)
   const [currencyTo, setCurrencyTo] = useState('USD')
   const dataCurrencyTo = [
-    { id: 1, text: 'USD', icon: '🇺🇸 ',value: 44000 },
+    { id: 1, text: 'USD', icon: '🇺🇸',value: 44000 },
     { id: 2, text: 'EUR', icon: '🗺',value: 45000 },
   ]
   const [type, setType] = useState('')
@@ -45,30 +45,38 @@ export default function App() {
 
   const [dataGrid, setDataGrid] = useState(dataTemp)
 
+  /* Exemple local filter*/ 
+  /* eslint-disable */
   const getFilter = () => {
 
     let dateIni = new Date(dates.dateIni).getTime()
     let dateEnd = new Date(dates.dateEnd).getTime()
+    let dataFilter = dataGrid
 
-    const filter = dataTemp.filter((element) => {
+    console.log('dataFilter ->', dataFilter)
+    const filter = dataFilter.filter((element) => {
       if (
-        new Date(element.dateTime).getTime() >= dateIni && new Date(element.dateTime).getTime() <= dateEnd
-        && element.type.includes(type)
+        new Date(element.date).getTime() >= dateIni && new Date(element.date).getTime() <= dateEnd
+        // && element.type.includes(type)
       ) {
         return element
       }
-      return element
+
     })
+    console.log('filter ->', filter)
     setDataGrid(filter)
 
   }
+  /* eslint-enable */
+  /* Exemple local filter*/ 
+
   const getData = async () => {
 
     setLoader({ ...loader, get: true })
 
     try {
 
-      const response = await fetch(`${API}/history`, {
+      const response = await fetch(`${API}/history/${dates.dateIni}/${dates.dateEnd}`, {
         method: 'GET',
         timeout: 15000,
         headers: { 'Content-Type': 'application/json' },
@@ -313,7 +321,7 @@ export default function App() {
           </div>
           <div className="w-52 p-5">
             <button
-              onClick={() => getFilter()}
+              onClick={() => getData()}
               type="button" className="mt-8 w-24 text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-800">
               filter
             </button>
@@ -335,7 +343,7 @@ export default function App() {
               {currentItems &&
                 currentItems.map((row, idx) => (
                   <tr key={idx}>
-                    <td className="p-3">{utils.formatDate(row.date)}</td>
+                    <td className="p-3">{row.date}</td>
                     <td className="p-3">{row.currency_from}</td>
                     <td className="p-3">{row.amount}</td>
                     <td className="p-3">{row.currency_to}</td>
