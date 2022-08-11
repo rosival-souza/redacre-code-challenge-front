@@ -11,7 +11,7 @@ export default function App() {
     { id: 1, text: 'USD', icon: '🇺🇸',value: 44000 },
     { id: 2, text: 'EUR', icon: '🗺',value: 45000 },
   ]
-  const [type, setType] = useState('')
+  const [type, setType] = useState('All')
   const [value, setValue] = useState(dataCurrencyTo[0].value)
   const [loader, setLoader] = useState({
     get: false,
@@ -76,7 +76,7 @@ export default function App() {
 
     try {
 
-      const response = await fetch(`${API}/history/${dates.dateIni}/${dates.dateEnd}`, {
+      const response = await fetch(`${API}/history/${dates.dateIni}/${dates.dateEnd}/${type}`, {
         method: 'GET',
         timeout: 15000,
         headers: { 'Content-Type': 'application/json' },
@@ -314,9 +314,9 @@ export default function App() {
           <div className="w-52 p-5">
             <label className="form-label inline-block mb-2 text-gray-300">Type</label>
             <select value={type} onChange={(e) => setType(e.target.value)} className="block appearance-none w-full border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state">
-              <option value="">All</option>
-              <option>Live Price</option>
-              <option>Exchanged</option>
+              <option value="All">All</option>
+              <option value="EUR">Live Price</option>
+              <option value="USD">Exchanged</option>
             </select>
           </div>
           <div className="w-52 p-5">
