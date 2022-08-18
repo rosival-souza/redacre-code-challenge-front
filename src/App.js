@@ -8,8 +8,8 @@ export default function App() {
   const [amount, setAmout] = useState(1)
   const [currencyTo, setCurrencyTo] = useState('USD')
   const dataCurrencyTo = [
-    { id: 1, text: 'USD', icon: '🇺🇸',value: 44000 },
-    { id: 2, text: 'EUR', icon: '🗺',value: 45000 },
+    { id: 1, text: 'USD', icon: '🇺🇸', value: 44000 },
+    { id: 2, text: 'EUR', icon: '🗺', value: 45000 },
   ]
   const [type, setType] = useState('All')
   const [value, setValue] = useState(dataCurrencyTo[0].value)
@@ -24,7 +24,7 @@ export default function App() {
     dateEnd: utils.getDate()
   })
 
-  /** This is data temp to demonstrate Grid **/ 
+  /** This is data temp to demonstrate Grid **/
   const dataTemp = [
     { date: '2022-08-08', currency_from: 'Bitcoin', amount: 1, currency_to: 'USD', total: 48000, type: 'Live Price' },
     { date: '2022-08-05', currency_from: 'Ripple', amount: 1, currency_to: 'EUR', total: 56000, type: 'Exchanged' },
@@ -41,11 +41,11 @@ export default function App() {
     { date: '2022-08-02', currency_from: 'Ripple', amount: 1, currency_to: 'EUR', total: 48000, type: 'Live Price' },
     { date: '2022-08-01', currency_from: 'Bitcoin', amount: 1, currency_to: 'USD', total: 48000, type: 'Exchanged' },
   ]
-  /** This is data temp to demonstrate Grid **/ 
+  /** This is data temp to demonstrate Grid **/
 
   const [dataGrid, setDataGrid] = useState(dataTemp)
 
-  /* Exemple local filter*/ 
+  /* Exemple local filter*/
   /* eslint-disable */
   const getFilter = () => {
 
@@ -68,9 +68,12 @@ export default function App() {
 
   }
   /* eslint-enable */
-  /* Exemple local filter*/ 
+  /* Exemple local filter*/
 
   const getData = async () => {
+
+
+    setItemOffset(0)
 
     setLoader({ ...loader, get: true })
 
@@ -84,7 +87,7 @@ export default function App() {
 
       const res = await response.json()
 
-      console.log('res ->', res)
+      console.log('response ->', res)
 
       setDataGrid(res.data)
 
@@ -129,11 +132,11 @@ export default function App() {
     setLoader({ ...loader, send: false })
 
   }
-  const getValue = (dataSelect) =>{
+  const getValue = (dataSelect) => {
 
     dataSelect = Number(dataSelect)
 
-    const filter = dataCurrencyTo.filter(element =>{
+    const filter = dataCurrencyTo.filter(element => {
       return element.id === dataSelect
     })
 
@@ -348,7 +351,7 @@ export default function App() {
                     <td className="p-3">{row.amount}</td>
                     <td className="p-3">{row.currency_to}</td>
                     <td className="p-3">{utils.formatMoney(row.total)}</td>
-                    <td className={row.currency_to === 'USD' ? "p-3 text-blue-600" : "p-3 text-green-500"}>{row.currency_to === 'USD' ? 'Exchanged':'Live Price'}</td>
+                    <td className={row.currency_to === 'USD' ? "p-3 text-blue-600" : "p-3 text-green-500"}>{row.currency_to === 'USD' ? 'Exchanged' : 'Live Price'}</td>
                   </tr>
                 ))}
             </tbody>
